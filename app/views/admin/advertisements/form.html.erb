@@ -1,0 +1,99 @@
+<div class="ext_style">
+<%= render :partial => 'admin/left_navigations/ads_sponsors' %>
+<div class="right_pane"><div class="right_pane_border">
+
+  <div class="header"><%= @advertisement.species.name %>: <%= @advertisement.name %></div>
+
+<% form_for( @advertisement, :url => anonymous_admin_form_path( @advertisement ), :html => { :multipart => true } ) do |f| %>
+
+  <table class="form_area">
+    <tbody>
+      <tr class="top_padding">
+        <td class="label">&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td class="label">Name:</td>
+        <td><%= f.text_field :name, :class => 'string' %></td>
+      </tr>
+      <% unless @advertisement.new_record? -%>
+        <tr>
+          <td class="label">Workflow:</td>
+          <td><%= @advertisement.workflow.name %></td>
+        </tr>
+      <% end -%>
+      <tr>
+        <td class="label">Type:</td>
+        <td><%= @advertisement.species.name %><%= f.hidden_field :species_id %></td>
+      </tr>
+      <tr>
+        <td class="label">URL:</td>
+        <td><%= f.text_field :url, :class => 'string' %></td>
+      </tr>
+      
+      <!--
+      <tr>
+        <td class="label" colspan="2">
+          Open in new window?
+          <%= f.check_box :new_tab %>
+        </td>
+      </tr>
+      -->
+      <tr>
+        <td class="label">Image or Flash:<br></td>
+        <td>
+          <%= file_field @advertisement.species.attachment_class.to_s.underscore.to_sym, :uploaded_data %>
+          <% unless @advertisement.attachment.nil? %>
+            <div style="padding:5px" id="ad_image">
+              <%= show_image_or_flash @advertisement.attachment, :width =>  @advertisement.species.name =~ /Curtain|Sales/ ? '100%' : nil %>
+            </div>
+            <!--
+            <button style="float:left" type="button" class="delete_button" onclick="if (confirm('Are you sure you want to delete the square thumbnail?')) {$('ad_image').hide();$('hidden_delete_image').value='yes';this.hide();}">Delete</button> -->
+          <% end %>
+
+          <input type="hidden" id="hidden_delete_image" name="delete_image" value="no"/>          
+        </td>
+      </tr>
+
+      <tr>
+        <td class="label">Flash Backup Image:<br></td>
+        <td>
+          <%= file_field :swf_backup, :uploaded_data %>
+          <% unless @advertisement.swf_backup.nil? %>
+            <div style="padding:5px" id="ad_image">
+              <%= show_image_or_flash @advertisement.swf_backup, :width =>  @advertisement.species.name =~ /Curtain|Sales/ ? '100%' : nil %>
+            </div>
+          <% end %>
+
+          <input type="hidden" id="hidden_delete_image" name="delete_image" value="no"/>          
+        </td>
+      </tr>
+      
+      <tr>
+        <td class="label">HTML:</td>
+        <td><%= f.text_area :html_code, :class => 'textarea', :style => "height:200px;font-size:1em" %></td>
+      </tr>
+      
+    </tbody>
+    
+    <tfoot>
+      <tr>
+        <td colspan="2">
+          <%= hidden_field_tag( 'workflow' ) %>
+        <% if @advertisement.workflow.is_pending? -%>
+          <% if current_user.is_at_least?( :publisher ) -%>
+          <button type="button" onclick="ExtStyleTable.publishForm( this );">Publish</button>
+          <% end -%>
+          <button type="button" onclick="ExtStyleTable.revertForm( this );">Revert</button>
+        <% end -%>
+          <button type="submit">Save</button>
+          <button type="button" onclick="document.location='<%= admin_advertisements_path %>';return false;">Cancel</button>
+        </td>
+    </tfoot>
+  </table>
+<% end %>
+
+</div></div>
+
+</div>
+

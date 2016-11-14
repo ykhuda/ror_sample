@@ -1,0 +1,42 @@
+<div class="ext_style">
+<%= render :partial => 'admin/left_navigations/ads_sponsors' %>
+<div class="right_pane"><div class="right_pane_border">
+
+  <div class="header">Listing Advertisements</div>
+  <%= render :partial => 'admin/common/button_bar', :locals => {
+    :new_button_html => link_to("<div>New...</div>", 
+      new_admin_advertisement_path(:species_id => params[:filter_species]), :class => :new),
+    :search_resource => 'versioned_advertisement',
+    :options => {:no_filter_by_state => true}
+  } %>
+  <table class="list">
+    <%= render :partial => 'admin/common/standard_thead', :locals => { :options => {} } %>
+    
+    <tbody id="index_tbody">
+  <% @advertisements.each do |advertisement| %>
+      <tr ondblclick="ExtStyleTable.showRow( this );" onclick="ExtStyleTable.selectRow( this );" id="<%= anonymous_admin_path( advertisement.most_recent ) %>">
+        <td class="primary"><%= advertisement.most_recent.name %></td>
+        <td><%= advertisement.most_recent.workflow.name %></td>
+        <td><%= advertisement.most_recent.species.name %></td>
+        <td><%= format_stamp_for( advertisement.most_recent ) %></td>
+      </tr>
+  <% end %>
+    </tbody>
+
+    <tfoot>
+      <tr>
+        <td colspan="4">
+          <div class="pagination_info">
+             <%= page_entries_info @advertisements %>
+          </div>
+          <%= will_paginate @advertisements, :prev_label => "<span class='prev'>&nbsp;&nbsp;&nbsp;&nbsp;</span>", :next_label => "<span class='next'>&nbsp;&nbsp;&nbsp;&nbsp;</span>" %>
+        </td>
+      </tr>
+    </tfoot>
+
+  </table>
+
+</div></div>
+
+</div>
+
